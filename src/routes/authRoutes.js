@@ -1,20 +1,50 @@
 import { Router } from "express";
+import * as authController from "../controllers/auth.controller.js";
+
+
 const authRouter = Router();
-import * as authController from "../controller/authController.js"
 
 
-authRouter.post("/register",authController.registerUser)
 
-authRouter.post("/login",authController.login)
+/**
+ * POST /api/auth/register
+ */
+authRouter.post("/register", authController.register)
 
-authRouter.get("/get-me",authController.get_me)
 
-authRouter.get("/refresh",authController.RefreshToken)
+/**
+ * POST /api/auth/login
+ */
+authRouter.post("/login", authController.login)
 
-authRouter.get("/logout",authController.logout)
 
-authRouter.get("logout-all",authController.logoutAll)
 
-authRouter.post("otp",authController.otp)
+/**
+ * GET /api/auth/get-me
+ */
+authRouter.get("/get-me", authController.getMe)
+
+/**
+ * GET /api/auth/refresh-token
+ */
+authRouter.get("/refresh-token", authController.refreshToken)
+
+
+/**
+ * GET /api/auth/logout
+ */
+authRouter.get("/logout", authController.logout)
+
+
+/**
+ * GET /api/auth/logout-all
+ */
+authRouter.get("/logout-all", authController.logoutAll)
+
+/**
+ * GET /api/auth/verify-email
+ */
+authRouter.get("/verify-email", authController.verifyEmail)
+
 
 export default authRouter;
