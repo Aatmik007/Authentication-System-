@@ -78,6 +78,44 @@ export async function login(req,resp){
             message:"Password Invalid"
         })
     }
+    const refreshToken = jwt.sign({
+        id:user_id
+    },config.JWT_SECRET_KEY,{
+        expiresIn:"7d"
+
+        
+    })
+
+    const refreshTokenHash = crypto.createHash("sha256").update(refreshToken).digest("hex")
+
+    const session = await sessionModel.create({
+        user: user._id,
+        refreshTokenHash,
+        ip:req.ip,
+        userAgent: req.headers("user-agent")
+    })
+
+    const accessToken = jwt.sign({
+        id: user._id,
+        sessionId: session._id
+    },config.JWT_SECRET_KEY,{
+        expiresIn:"15m"
+    })
+    
+    req.cookie("refreshToken" ,refreshToken,{
+        httpOnly:true,
+        secure:true,
+        sameSite:"strict",
+        maxAge: 7 * 24 * 60 *60 * 1000
+    })
+
+    resp.status(201).json({
+        message: "Login in successfully",
+        user:{
+            username: user.username,
+            email: user.email
+        },accessToken
+    })
 }
 export async function get_me(req, resp) {
 
@@ -186,6 +224,9 @@ export async function logoutAll(req,resp){
         resp.status(200).json({
             message:"Logged out succesfully all from device "
         })
+    }
+    export async function otp(req,resp){
+
     }
 }
 
